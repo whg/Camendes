@@ -6,12 +6,67 @@ using namespace ci;
 using namespace ci::app;
 using namespace std;
 
+//using BaseTileRef = std::shared_ptr<BaseTile>;
+
+class BaseTile : public Shape2d {
+public:
+    virtual void setColourFromChannel(Channel &channel) = 0;
+    virtual vector<Colorf> getColors() = 0;
+    virtual string getId() = 0;
+    virtual vec2 getCenter() const { return mCenter; }
+    
+protected:
+    vec2 mCenter;
+};
+
+struct PixelCache {
+
+    vector<ivec2> mInsidePositions;
+    Area mBoundingBox;
+    
+    static shared_ptr<PixelCache> create(BaseTile &tile, uint radius) {
+
+        auto center = tile.getCenter();
+        Area boundingBox(center - vec2(radius, radius), center + vec2(radius, radius));
+
+        shared_ptr<PixelCache> output = make_shared<PixelCache>();
+        
+        for (float x = boundingBox.getX1(); x < boundingBox.getX2(); x++) {
+            for (float y = boundingBox.getY1(); y < boundingBox.getY2(); y++) {
+                if (tile.contains(vec2(x, y))) {
+                    output->mInsidePositions.push_back(ivec2(x, y));
+                }
+            }
+        }
+        
+        output->mBoundingBox = boundingBox;
+        
+        return output;
+    }
+
+    static map<string, shared_ptr<PixelCache>> pixelCache;
+
+};
+
+
+map<string, shared_ptr<PixelCache>> PixelCache::pixelCache;
+
+
+
 using TriangleRef = shared_ptr<class Triangle>;
 
-class Triangle : public Path2d {
+
+
+class Triangle : public BaseTile {
 public:
 
     enum Orientation { UP, DOWN };
+    
+    string getId() override {
+        char id[50];
+        sprintf(id, "ETri-%2.2f-%s", mSideLength, mOrientation == UP ? "u" : "d");
+        return string(id);
+    }
     
     static TriangleRef create(vec2 p, float sideLength, bool down=true) {
 
@@ -30,29 +85,37 @@ public:
         
         output->transform(transform);
         
-        output->mCenter = output->calcBoundingBox().getCenter();
+//        output->mCenter = output->calcBoundingBox().getCenter();
+        vec2 point(0.0f);
+        for (auto &p : output->getContour(0).getPoints()) {
+            point+= p;
+        }
+        output->mCenter = point / 3.0f;
         output->mOrientation = down ? DOWN : UP;
         output->mSideLength = sideLength;
-//        output->mOffset = p;
 
         output->mColour = Color(p.x / 600.0f, p.y / 400.0f, 0.5);
 
         return output;
     }
     
-    void setColourFromChannel(Channel &channel) {
-        // get the cache
-        // loop through cache
-        // which is a 2d array of bools
-        // or a list of coords - that need to be offset for the triangle
-        // go though region of channel that corresponds to
+    void setColourFromChannel(Channel &channel) override {
         shared_ptr<PixelCache> pixels;
+
         try {
-            pixels = pixelCache.at(make_pair(mSideLength, mOrientation));
+            pixels = PixelCache::pixelCache.at(getId());
         }
         catch (std::out_of_range e) {
-            addToPixelCache(mSideLength);
-            pixels = pixelCache.at(make_pair(mSideLength, mOrientation));
+//            addToPixelCache(mSideLength);
+            float radius = mSideLength / std::sqrt(3.0f);
+            auto up = create(vec2(0), mSideLength, true);
+            PixelCache::pixelCache.emplace(up->getId(), PixelCache::create(*up.get(), radius));
+            auto down = create(vec2(0), mSideLength, false);
+            PixelCache::pixelCache.emplace(down->getId(), PixelCache::create(*down.get(), radius));
+//            pixelCache.emplace(make_pair(sideLength, DOWN), PixelCache::createWithOrientation(sideLength, DOWN));
+//            pixelCache.emplace(make_pair(sideLength, UP), PixelCache::createWithOrientation(sideLength, UP));
+
+            pixels = PixelCache::pixelCache.at(getId());
         }
         
         auto *channelData = channel.getData();
@@ -62,7 +125,7 @@ public:
         float nPixels = 0;
         for (auto &offset : pixels->mInsidePositions) {
 
-            ivec2 pos = offset + ivec2(mCenter.x, mCenter.y);
+            ivec2 pos = ivec2(mCenter.x, mCenter.y) - offset;
             if (channel.getBounds().contains(pos)) {
 //            cout << pos << endl;
 //                cout << channelData[pos.x + pos.y * channel.getRowBytes()] << endl;
@@ -88,61 +151,24 @@ public:
         mColour = Color(v, v, v);
     }
     
-    vec2 getCenter() { return mCenter; }
+    vector<Colorf> getColors() override {
+        return vector<Colorf>(3, mColour);
+    }
+    
+    vec2 getCenter() const override { return mCenter; }
     ivec2 getICenter() { return ivec2(mCenter.x, mCenter.y); }
 //    vec2 mOffset;
     
     
 //    using PixelCacheRef = shared_ptr<struct Triangle::PixelCache>;
     
-    struct PixelCache {
-        float mSize;
-        vec2 mCenter;
-        vector<ivec2> mInsidePositions;
-        Area mBoundingBox;
-        
-        static uint boxRadius(float sideLength) {
-            return static_cast<uint>(std::ceil(sideLength / sqrt(3.0f)));
-        }
-        
-        static shared_ptr<PixelCache> createWithOrientation(float sideLength, Orientation orientation) {
-            
-            auto downTriangle = Triangle::create(vec2(0.0f), sideLength, orientation == DOWN);
-            
-            auto r = boxRadius(sideLength);
-            auto center = downTriangle->getCenter();
-            Area boundingBox(center - vec2(r, r), center + vec2(r, r));
-            
-            shared_ptr<PixelCache> output = make_shared<PixelCache>();
-            
-            for (float x = boundingBox.getX1(); x < boundingBox.getX2(); x++) {
-                for (float y = boundingBox.getY1(); y < boundingBox.getY2(); y++) {
-                    if (downTriangle->contains(vec2(x, y))) {
-                        output->mInsidePositions.push_back(ivec2(x, y));
-                    }
-                }
-            }
-            
-            output->mBoundingBox = boundingBox;
-            
-            return output;
-        }
-    };
     
-    static void addToPixelCache(float sideLength) {
-        pixelCache.emplace(make_pair(sideLength, DOWN), PixelCache::createWithOrientation(sideLength, DOWN));
-        pixelCache.emplace(make_pair(sideLength, UP), PixelCache::createWithOrientation(sideLength, UP));
-    }
-    
-    static map<pair<float, Orientation>, shared_ptr<PixelCache>> pixelCache;
-
     Orientation mOrientation;
     vec2 mCenter;
     float mSideLength;
     Color mColour;
 };
 
-map<pair<float, Triangle::Orientation>, shared_ptr<Triangle::PixelCache>> Triangle::pixelCache;
 
 class TriGrid {
 public:
@@ -186,11 +212,10 @@ public:
     void populateMesh() {
         mTriMesh->clear();
         for (auto triangle : mTriangles) {
-            mTriMesh->appendPositions(&triangle->getPoints()[0], 3);
-            for (size_t i = 0; i < 3; i++) {
-                mTriMesh->appendColorRgb(triangle->mColour);
+            for (auto &path : triangle->getContours()) {
+                mTriMesh->appendPositions(&path.getPoints()[0], path.getPoints().size());
             }
-            
+            mTriMesh->appendColors(&triangle->getColors()[0], triangle->getColors().size());
         }
     }
     
@@ -230,25 +255,25 @@ class TriangleImageApp : public App {
 void TriangleImageApp::setup()
 {
     
-    auto tri = Triangle::create(vec2(0.0f), 12);
-    auto pc = Triangle::PixelCache::createWithOrientation(12, Triangle::UP);
-    map<pair<int, int>, bool> points;
-    for (auto p : pc->mInsidePositions) {
-        points.emplace(make_pair(int(p.x), int(p.y)), true);
-//        cout << (vec2(p.x, p.y) +tri->getCenter()) << endl;
-    }
-    
-    for (int y = pc->mBoundingBox.getY1(); y < pc->mBoundingBox.getY2(); y++) {
-        for (int x = pc->mBoundingBox.getX1(); x < pc->mBoundingBox.getX2(); x++) {
-            if (points.count(make_pair(x, y)) > 0) {
-                cout << "1";
-            }
-            else {
-                cout << "0";
-            }
-        }
-        cout << endl;
-    }
+//    auto tri = Triangle::create(vec2(0.0f), 12);
+//    auto pc = Triangle::PixelCache::createWithOrientation(12, Triangle::UP);
+//    map<pair<int, int>, bool> points;
+//    for (auto p : pc->mInsidePositions) {
+//        points.emplace(make_pair(int(p.x), int(p.y)), true);
+////        cout << (vec2(p.x, p.y) +tri->getCenter()) << endl;
+//    }
+//    
+//    for (int y = pc->mBoundingBox.getY1(); y < pc->mBoundingBox.getY2(); y++) {
+//        for (int x = pc->mBoundingBox.getX1(); x < pc->mBoundingBox.getX2(); x++) {
+//            if (points.count(make_pair(x, y)) > 0) {
+//                cout << "1";
+//            }
+//            else {
+//                cout << "0";
+//            }
+//        }
+//        cout << endl;
+//    }
 //    for (auto &p : pc->mInsidePositions) cout << p;
 //    cout << endl;
 //    quit();
@@ -284,7 +309,7 @@ void TriangleImageApp::draw()
 //    gl::color(0, 0, 0);
 //
     gl::disableWireframe();
-//    gl::draw(mTexture);
+    gl::draw(mTexture);
 
     gl::pushMatrices();
 //    gl::translate(vec2(20, 20));
