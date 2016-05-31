@@ -2,6 +2,8 @@
 #include "cinder/app/RendererGl.h"
 #include "cinder/gl/gl.h"
 
+#include "glm/gtc/random.hpp"
+
 using namespace ci;
 using namespace ci::app;
 using namespace std;
@@ -308,10 +310,21 @@ public:
                 
             }
             
+
             float v = pixelSum / 255.0f / nPixels;
             float d = 8;
             v = std::floor(v * d) / d;
             v+= 0.125;
+            
+//            v+= glm::linearRand(0, 3);
+//            int rmax = 6;
+//            auto r = glm::linearRand(0, rmax);
+//            if (r == 0) {
+//                v-= 1.0f / d;
+//            }
+//            else if (r == rmax) {
+//                v+= 1.0f / d;
+//            }
 
             half->mColour = Color(v, v, v);
 
@@ -431,10 +444,11 @@ void TriangleImageApp::setup()
     mChannel = Channel::create(loadImage(loadAsset("giulia_marco.jpg")));
     mTexture = gl::Texture::create(*mChannel.get());
     setWindowSize(mChannel->getSize());
+    setWindowPos(10, 10);
     
     float start = getElapsedSeconds();
     
-    mTriGrid.setup(getWindowSize(), 32);
+    mTriGrid.setup(getWindowSize(), 24);
     mTriGrid.colourTriangles(*mChannel.get());
     mTriGrid.populateMesh();
     
@@ -469,7 +483,7 @@ void TriangleImageApp::draw()
     vector<float> colsCopy(cols.begin(), cols.end());
     cols.clear();
     for (size_t i = 0; i < colsCopy.size(); ++i) {
-        cols.push_back(0.45f);
+        cols.push_back(0.9f);
     }
     gl::enableWireframe();
 
