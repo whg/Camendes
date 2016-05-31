@@ -310,13 +310,23 @@ public:
                 
             }
             
-
-            float v = pixelSum / 255.0f / nPixels;
-            float d = 8;
-            v = std::floor(v * d) / d;
-            v+= 0.125;
+            vector<Colorf> cols = {
+                Colorf(0.074510, 0.094118, 0.117647),
+                Colorf(0.109804, 0.113725, 0.137255),
+                Colorf(0.129412, 0.152941, 0.298039),
+                Colorf(0.109804, 0.152941, 0.372549),
+                Colorf(0.113725, 0.227451, 0.494118),
+                Colorf(0.117647, 0.337255, 0.615686),
+                Colorf(0.478431, 0.525490, 0.580392),
+                Colorf(0.619608, 0.643137, 0.686275),
+                Colorf(0.843137, 0.870588, 0.909804),
+            };
             
-//            v+= glm::linearRand(0, 3);
+            float v = pixelSum / 255.0f / nPixels;
+            float d = cols.size();
+//            v = std::floor(v * d) / d;
+//            v+= 0.125;
+
 //            int rmax = 6;
 //            auto r = glm::linearRand(0, rmax);
 //            if (r == 0) {
@@ -326,7 +336,26 @@ public:
 //                v+= 1.0f / d;
 //            }
 
-            half->mColour = Color(v, v, v);
+//            half->mColour = Color(v, v, v);
+            
+            int index = size_t(std::floor(v * d));
+
+            int rmax = 6;
+            auto r = glm::linearRand(0, rmax);
+            if (r == 0) {
+                index--;
+            }
+            else if (r == rmax) {
+                index++;
+            }
+            
+            index = std::min(int(cols.size() - 1), std::max(0, index));
+
+            if (index < 0 || index >= cols.size()) {
+                cout << "asdf" << endl;
+            }
+
+            half->mColour = cols[index];
 
         }
         
@@ -456,10 +485,14 @@ void TriangleImageApp::setup()
     
     cout << (mTriGrid.mTriangles.size() * 6) << endl;
 
+
+    setWindowSize(ivec2((mTriGrid.mNumTris.x - 1)  * mTriGrid.mSideLength, mTriGrid.mNumTris.y * mTriGrid.mSideLength / std::sqrt(3.0f) * 1.5));
 }
 
 void TriangleImageApp::mouseDown( MouseEvent event )
 {
+    mTriGrid.colourTriangles(*mChannel.get());
+    mTriGrid.populateMesh();
 }
 
 void TriangleImageApp::update()
@@ -475,21 +508,22 @@ void TriangleImageApp::draw()
 //    gl::draw(mTexture);
 
     gl::pushMatrices();
-
+    gl::translate(vec2(-mTriGrid.mSideLength * 0.5f, 0.0f));
+    
     gl::draw(*mTriGrid.mTriMesh.get());
     
 
-    auto &cols = mTriGrid.mTriMesh->getBufferColors();
-    vector<float> colsCopy(cols.begin(), cols.end());
-    cols.clear();
-    for (size_t i = 0; i < colsCopy.size(); ++i) {
-        cols.push_back(0.9f);
-    }
-    gl::enableWireframe();
-
-    gl::draw(*mTriGrid.mTriMesh.get());
-    
-    cols = colsCopy;
+//    auto &cols = mTriGrid.mTriMesh->getBufferColors();
+//    vector<float> colsCopy(cols.begin(), cols.end());
+//    cols.clear();
+//    for (size_t i = 0; i < colsCopy.size(); ++i) {
+//        cols.push_back(0.9f);
+//    }
+//    gl::enableWireframe();
+//
+//    gl::draw(*mTriGrid.mTriMesh.get());
+//    
+//    cols = colsCopy;
 
     
 //    
@@ -503,12 +537,12 @@ void TriangleImageApp::draw()
 //    gl::color(0, 1, 0);
 //    for (auto p :PixelCache::pixelCache.at("HTri-50.00-u-l-0")->mInsidePositions) {
 ////        auto c = mTriGrid.mTriangles[0]->mHalves[0]->mCenter;
-//        auto c = mTriGrid.mTriangles[0]->mOffset;
+////        auto c = mTriGrid.mTriangles[0]->mOffset;
 ////        cout << mTriGrid.mTriangles[0]->mHalves[0]->getId() << endl;
-//        p = ivec2(c.x, c.y) + p;
+////        p = ivec2(c.x, c.y) + p;
 //        gl::drawSolidRect(Rectf(p.x, p.y, p.x+1, p.y+1));
 //    }
-//    
+//
 //    gl::color(0, 0, 1);
 //    gl::drawSolidCircle(mTriGrid.mTriangles[0]->mHalves[0]->mCenter, 2);
 //    
