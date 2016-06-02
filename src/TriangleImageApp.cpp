@@ -205,25 +205,37 @@ public:
                 assert(1 == 0);
             }
             
+            if (orientation == UP) {
+                output->transform(glm::rotate(mat3(1.0f), 3.14159f / 3.0f));
+            }
+
+            
+            vec2 relativeCenter(0.0f);
+            for (auto &p : output->getContour(0).getPoints()) {
+                relativeCenter+= p;
+            }
+            relativeCenter/= 3.0f;
+            
+            
             mat3 transform = glm::translate(mat3(1.0), p);
             
-            if (orientation == UP) {
-                transform = glm::rotate(transform, 3.14159f / 3.0f);
-                
-            }
+//            if (orientation == UP) {
+//                transform = glm::rotate(transform, 3.14159f / 3.0f);
+//            }
             
             output->transform(transform);
-            
-//            vec2 point(0.0f);
-//            for (auto &p : output->getContour(0).getPoints()) {
-//                point+= p;
-//            }
-//            output->mCenter = point / 3.0f;
-            output->mCenter = (a + b + c) / 3.0f;
-            if (orientation == UP) {
-                output->mCenter = glm::rotate(output->mCenter, 3.14159f / 3.0f);
+  
+           
+            vec2 point(0.0f);
+            for (auto &p : output->getContour(0).getPoints()) {
+                point+= p;
             }
-            output->mCenter+= p;
+            output->mCenter = point / 3.0f;
+//            output->mCenter = (a + b + c) / 3.0f;
+//            if (orientation == UP) {
+//                output->mCenter = glm::rotate(output->mCenter, 3.14159f / 3.0f);
+//            }
+//            output->mCenter+= p;
             
             output->mOrientation = orientation;
             output->mSideLength = sideLength;
@@ -232,6 +244,27 @@ public:
             
             //        output->mColour = Color(p.x / 600.0f, p.y / 400.0f, 0.5);
             output->mColour = Color(0, 0, 0);
+            
+//            
+//            mat3 shrink = mat3(1.0f);
+//            shrink = glm::translate(shrink, -output->mCenter );
+//            
+//            output->transform(shrink);
+//            
+//            shrink = glm::scale(mat3(1.0), vec2(0.99, 0.99));
+////
+
+//
+//            shrink = glm::translate(shrink, output->mCenter);
+
+//            output->transform(glm::translate(mat3(1.0), -output->mCenter));
+//            output->transform(glm::scale(mat3(1.0), vec2(0.9, 0.9)));
+//            output->transform(glm::translate(mat3(1.0), output->mCenter));
+
+            
+//            cout << shrink << endl;
+            
+;
             
             return output;
         }
@@ -243,6 +276,7 @@ public:
         
         char mSide;
         int mRotation;
+        int mColourIndex;
 
     };
     
@@ -356,6 +390,7 @@ public:
             }
 
             half->mColour = cols[index];
+            half->mColourIndex = index;
 
         }
         
@@ -477,7 +512,7 @@ void TriangleImageApp::setup()
     
     float start = getElapsedSeconds();
     
-    mTriGrid.setup(getWindowSize(), 24);
+    mTriGrid.setup(getWindowSize(), 29);
     mTriGrid.colourTriangles(*mChannel.get());
     mTriGrid.populateMesh();
     
@@ -485,8 +520,31 @@ void TriangleImageApp::setup()
     
     cout << (mTriGrid.mTriangles.size() * 6) << endl;
 
+    cout << (mTriGrid.mNumTris * 2) << endl;
+    
+    map<int, size_t> colourAmounts;
+    
+    for (auto triangle : mTriGrid.mTriangles) {
+        for (auto half : triangle->mHalves) {
+            auto index = half->mColourIndex;
+            
+            if (colourAmounts.count(index) == 0) {
+                colourAmounts.emplace(index, 0);
+            }
+            
+            ++colourAmounts[index];
+        }
+    }
+    
+    cout << "colour amounts" << endl;
+    size_t total = 0;
+    for (auto &pair : colourAmounts) {
+        cout << "Colour " << (pair.first + 1) << ": " << pair.second << endl;
+        total+= pair.second;
+    }
+    cout << "total = " << total << endl;
 
-    setWindowSize(ivec2((mTriGrid.mNumTris.x - 1)  * mTriGrid.mSideLength, mTriGrid.mNumTris.y * mTriGrid.mSideLength / std::sqrt(3.0f) * 1.5));
+//    setWindowSize(ivec2((mTriGrid.mNumTris.x - 1)  * mTriGrid.mSideLength, mTriGrid.mNumTris.y * mTriGrid.mSideLength / std::sqrt(3.0f) * 1.5));
 }
 
 void TriangleImageApp::mouseDown( MouseEvent event )
@@ -507,32 +565,37 @@ void TriangleImageApp::draw()
     gl::disableWireframe();
 //    gl::draw(mTexture);
 
+
+
     gl::pushMatrices();
-    gl::translate(vec2(-mTriGrid.mSideLength * 0.5f, 0.0f));
+//    gl::translate(vec2(-mTriGrid.mSideLength * 0.5f, 0.0f));
     
     gl::draw(*mTriGrid.mTriMesh.get());
     
-
+//
 //    auto &cols = mTriGrid.mTriMesh->getBufferColors();
 //    vector<float> colsCopy(cols.begin(), cols.end());
 //    cols.clear();
 //    for (size_t i = 0; i < colsCopy.size(); ++i) {
-//        cols.push_back(0.9f);
+//        cols.push_back(0.0f);
 //    }
 //    gl::enableWireframe();
 //
 //    gl::draw(*mTriGrid.mTriMesh.get());
 //    
 //    cols = colsCopy;
-
-    
+//
 //    
+//    gl::disableWireframe();
+////
 //    gl::color(1, 0, 0);
 //    for (auto ht : mTriGrid.mTriangles) {
 //        for (auto half : ht->mHalves) {
 //            gl::drawSolidCircle(half->mCenter, 2);
+////            gl::drawString(to_string(half->mColourIndex), half->mCenter, ColorA(0, 0, 0, 1));
 //        }
 //    }
+//
 //
 //    gl::color(0, 1, 0);
 //    for (auto p :PixelCache::pixelCache.at("HTri-50.00-u-l-0")->mInsidePositions) {
@@ -545,7 +608,7 @@ void TriangleImageApp::draw()
 //
 //    gl::color(0, 0, 1);
 //    gl::drawSolidCircle(mTriGrid.mTriangles[0]->mHalves[0]->mCenter, 2);
-//    
+//
     gl::popMatrices();
     
 }
