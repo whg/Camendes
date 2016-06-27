@@ -1,8 +1,11 @@
 #include "cinder/app/App.h"
 #include "cinder/app/RendererGl.h"
 #include "cinder/gl/gl.h"
+#include "cinder/cairo/Cairo.h"
 
 #include "glm/gtc/random.hpp"
+
+#define DO_GL 1
 
 using namespace ci;
 using namespace ci::app;
@@ -146,6 +149,18 @@ public:
     Color mColour;
 };
 
+vector<Colorf> cols = {
+
+    Colorf(0.000000, 0.000000, 0.000000),
+    Colorf(0.000000, 0.160000, 0.360000),
+    Colorf(0.000000, 0.270000, 0.520000),
+    Colorf(0.000000, 0.360000, 0.670000),
+    Colorf(0.000000, 0.480000, 0.760000),
+    Colorf(0.000000, 0.600000, 0.850000),
+    Colorf(0.740000, 0.740000, 0.740000),
+    Colorf(0.840000, 0.840000, 0.840000),
+};
+
 class HalvedTriangles : public Triangle {
 public:
     
@@ -163,7 +178,7 @@ public:
             vec2 center(sideLength * 0.5, sideLength / std::sqrt(3.0f) / 2.0f);
             vec2 a(0.0f);
             vec2 b(sideLength, 0);
-            vec2 c(sideLength * 0.5, sideLength * 0.5f * sqrt(3.0f));
+            vec2 c(sideLength * 0.5, sideLength * 0.5f * std::sqrt(3.0f));
             
             if (rotation == 120 && side == 'r') {
                 output->moveTo(a);
@@ -219,10 +234,6 @@ public:
             
             mat3 transform = glm::translate(mat3(1.0), p);
             
-//            if (orientation == UP) {
-//                transform = glm::rotate(transform, 3.14159f / 3.0f);
-//            }
-            
             output->transform(transform);
   
            
@@ -231,40 +242,20 @@ public:
                 point+= p;
             }
             output->mCenter = point / 3.0f;
-//            output->mCenter = (a + b + c) / 3.0f;
-//            if (orientation == UP) {
-//                output->mCenter = glm::rotate(output->mCenter, 3.14159f / 3.0f);
-//            }
-//            output->mCenter+= p;
-            
+
             output->mOrientation = orientation;
             output->mSideLength = sideLength;
             output->mRotation = rotation;
             output->mSide = side;
             
-            //        output->mColour = Color(p.x / 600.0f, p.y / 400.0f, 0.5);
             output->mColour = Color(0, 0, 0);
             
-//            
-//            mat3 shrink = mat3(1.0f);
-//            shrink = glm::translate(shrink, -output->mCenter );
-//            
-//            output->transform(shrink);
-//            
-//            shrink = glm::scale(mat3(1.0), vec2(0.99, 0.99));
-////
-
-//
-//            shrink = glm::translate(shrink, output->mCenter);
-
+            
+            //shrink
 //            output->transform(glm::translate(mat3(1.0), -output->mCenter));
-//            output->transform(glm::scale(mat3(1.0), vec2(0.9, 0.9)));
+//            output->transform(glm::scale(mat3(1.0), vec2(0.85, 0.85)));
 //            output->transform(glm::translate(mat3(1.0), output->mCenter));
 
-            
-//            cout << shrink << endl;
-            
-;
             
             return output;
         }
@@ -306,6 +297,13 @@ public:
         output->mOffset = p;
         output->mColour = Color(0, 1, 0);
         
+        vec2 q(0.0);
+        for (auto half : output->mHalves) {
+            q+= half->mCenter;
+        }
+        
+        output->mCenter = q / float(output->mHalves.size());
+        
         return output;
     }
     
@@ -343,52 +341,46 @@ public:
                 }
                 
             }
-            
-            vector<Colorf> cols = {
-                Colorf(0.074510, 0.094118, 0.117647),
-                Colorf(0.109804, 0.113725, 0.137255),
-                Colorf(0.129412, 0.152941, 0.298039),
-                Colorf(0.109804, 0.152941, 0.372549),
-                Colorf(0.113725, 0.227451, 0.494118),
-                Colorf(0.117647, 0.337255, 0.615686),
-                Colorf(0.478431, 0.525490, 0.580392),
-                Colorf(0.619608, 0.643137, 0.686275),
-                Colorf(0.843137, 0.870588, 0.909804),
-            };
-            
+
             float v = pixelSum / 255.0f / nPixels;
-            float d = cols.size();
-//            v = std::floor(v * d) / d;
-//            v+= 0.125;
-
-//            int rmax = 6;
-//            auto r = glm::linearRand(0, rmax);
-//            if (r == 0) {
-//                v-= 1.0f / d;
-//            }
-//            else if (r == rmax) {
-//                v+= 1.0f / d;
-//            }
-
-//            half->mColour = Color(v, v, v);
             
+            
+            float d = cols.size();
+            v = std::floor(v * d) / d;
+
+
+            half->mColour = Color(v, v, v);
+
             int index = size_t(std::floor(v * d));
 
-            int rmax = 6;
-            auto r = glm::linearRand(0, rmax);
-            if (r == 0) {
-                index--;
-            }
-            else if (r == rmax) {
-                index++;
+            if (glm::distance(vec2(413, 366), this->mCenter) > 130 &&
+                glm::distance(vec2(737,370), this->mCenter) > 130) {
+
+                int rmax = 6;
+                auto r = glm::linearRand(0, rmax);
+
+                if (r == 0) {
+                    if (index == 0) index++;
+                    else if (index == 1) index--;
+                    else index-= 2;
+                    
+                }
+                else if (r == rmax) {
+                    if (index + 1 == cols.size() - 1) index+= 1;
+                    else if (index == cols.size() - 1) index--;
+                    else index+= 2;
+                }
+                else if (r == 1) {
+                    if (index == 0) index++;
+                    else index--;
+                    
+                }
+                else if (r == rmax - 1) {
+                    if (index == cols.size() - 1) index--;
+                    else index++;
+                }
             }
             
-            index = std::min(int(cols.size() - 1), std::max(0, index));
-
-            if (index < 0 || index >= cols.size()) {
-                cout << "asdf" << endl;
-            }
-
             half->mColour = cols[index];
             half->mColourIndex = index;
 
@@ -398,9 +390,14 @@ public:
     
     vector<Colorf> getColors() override {
         vector<Colorf> output;
-        for (auto half : mHalves) {
-            auto halfColours = half->getColors();
-            output.insert(output.end(), halfColours.begin(), halfColours.end());
+        if (!mMerged) {
+            for (auto half : mHalves) {
+                auto halfColours = half->getColors();
+                output.insert(output.end(), halfColours.begin(), halfColours.end());
+            }
+        }
+        else {
+            output = vector<Colorf>(3, mColour);
         }
         return output;
     }
@@ -413,7 +410,7 @@ public:
     Color mColour;
     vector<Colorf> mColours;
     vec2 mOffset;
-    
+    bool mMerged;
     vector<shared_ptr<HalfTriangle>> mHalves;
 };
 
@@ -433,6 +430,7 @@ public:
         
         mTriMesh = TriMesh::create(TriMesh::Format().positions(2).colors(3));
         
+        mTriangles.clear();
         
         for (size_t y = 0; y < mNumTris.y; y++) {
         
@@ -472,6 +470,31 @@ public:
         for (auto triangle : mTriangles) {
             triangle->setColourFromChannel(channel);
         }
+        
+        map<std::pair<int, char>, size_t> colourAmounts;
+        
+        
+        for (auto triangle : mTriangles) {
+            for (auto half : triangle->mHalves) {
+                auto index = make_pair(half->mColourIndex, half->mSide);
+                
+                if (colourAmounts.count(index) == 0) {
+                    colourAmounts.emplace(index, 0);
+                }
+                
+                ++colourAmounts[index];
+            }
+        }
+        
+        cout << "colour amounts" << endl;
+        size_t total = 0;
+        for (auto &pair : colourAmounts) {
+            cout << "Colour " << (pair.first.first + 1) << "-" << pair.first.second << ": " << pair.second << endl;
+            total+= pair.second;
+        }
+        cout << "total = " << total << endl;
+        cout << endl;
+
     }
     
     
@@ -501,18 +524,22 @@ class TriangleImageApp : public App {
 
 
 
-void TriangleImageApp::setup()
-{
+void TriangleImageApp::setup() {
 
-//    mChannel = Channel::create(loadImage(loadAsset("couple.jpg")));
+    
+#ifdef DO_GL
     mChannel = Channel::create(loadImage(loadAsset("giulia_marco.jpg")));
     mTexture = gl::Texture::create(*mChannel.get());
+#else
+    mChannel = Channel::create(loadImage(loadAsset("giulia_marco_flip.jpg")));
+#endif
+
     setWindowSize(mChannel->getSize());
     setWindowPos(10, 10);
     
     float start = getElapsedSeconds();
     
-    mTriGrid.setup(getWindowSize(), 29);
+    mTriGrid.setup(getWindowSize(), 24);
     mTriGrid.colourTriangles(*mChannel.get());
     mTriGrid.populateMesh();
     
@@ -522,33 +549,14 @@ void TriangleImageApp::setup()
 
     cout << (mTriGrid.mNumTris * 2) << endl;
     
-    map<int, size_t> colourAmounts;
+    cout << mTriGrid.mSideLength << endl;
     
-    for (auto triangle : mTriGrid.mTriangles) {
-        for (auto half : triangle->mHalves) {
-            auto index = half->mColourIndex;
-            
-            if (colourAmounts.count(index) == 0) {
-                colourAmounts.emplace(index, 0);
-            }
-            
-            ++colourAmounts[index];
-        }
     }
-    
-    cout << "colour amounts" << endl;
-    size_t total = 0;
-    for (auto &pair : colourAmounts) {
-        cout << "Colour " << (pair.first + 1) << ": " << pair.second << endl;
-        total+= pair.second;
-    }
-    cout << "total = " << total << endl;
-
-//    setWindowSize(ivec2((mTriGrid.mNumTris.x - 1)  * mTriGrid.mSideLength, mTriGrid.mNumTris.y * mTriGrid.mSideLength / std::sqrt(3.0f) * 1.5));
-}
 
 void TriangleImageApp::mouseDown( MouseEvent event )
 {
+    mTriGrid.setup(getWindowSize(), 24);
+
     mTriGrid.colourTriangles(*mChannel.get());
     mTriGrid.populateMesh();
 }
@@ -559,25 +567,24 @@ void TriangleImageApp::update()
 
 void TriangleImageApp::draw()
 {
+
+#ifdef DO_GL
 	gl::clear( Color( 1, 1, 1 ) );
 
     gl::color(1, 1, 1);
     gl::disableWireframe();
-//    gl::draw(mTexture);
-
 
 
     gl::pushMatrices();
-//    gl::translate(vec2(-mTriGrid.mSideLength * 0.5f, 0.0f));
     
     gl::draw(*mTriGrid.mTriMesh.get());
     
-//
+
 //    auto &cols = mTriGrid.mTriMesh->getBufferColors();
 //    vector<float> colsCopy(cols.begin(), cols.end());
 //    cols.clear();
 //    for (size_t i = 0; i < colsCopy.size(); ++i) {
-//        cols.push_back(0.0f);
+//        cols.push_back(0.1f);
 //    }
 //    gl::enableWireframe();
 //
@@ -611,6 +618,48 @@ void TriangleImageApp::draw()
 //
     gl::popMatrices();
     
+    
+#else
+    
+    
+    string bit = "e";
+    
+    auto path = getHomeDirectory() / "Desktop" / "tris-cut-col.svg";
+    auto surf = cairo::SurfaceSvg(path, getWindowWidth(), getWindowHeight() );
+    cairo::Context ctx( surf );
+
+    ctx.setFontSize(7);
+    ctx.setLineWidth(0.1);
+    for (auto triangle : mTriGrid.mTriangles) {
+        for (auto half : triangle->mHalves) {
+            ctx.setSource(Color(0.1, 0.1, 0.1));
+            ctx.appendPath(*half.get());
+            ctx.stroke();
+            ctx.setSource(cols[half->mColourIndex]);
+            ctx.appendPath(*half.get());
+            ctx.fill();
+        }
+    }
+    
+    for (auto triangle : mTriGrid.mTriangles) {
+        for (auto half : triangle->mHalves) {
+            ctx.moveTo(half->mCenter - vec2(2.0, -2.0));
+            ctx.showText(toString(half->mColourIndex));
+        }
+    }
+
+    
+    ctx.save();
+    quit();
+
+#endif
+    
+    
 }
 
+#ifdef DO_GL
 CINDER_APP( TriangleImageApp, RendererGl )
+#else
+CINDER_APP( TriangleImageApp, Renderer2d )
+#endif
+

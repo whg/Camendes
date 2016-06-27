@@ -16,12 +16,14 @@
 		00B784B60FF439BC000DE1D7 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00B784B20FF439BC000DE1D7 /* CoreAudio.framework */; };
 		00B9955A1B128DF400A5C623 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00B995581B128DF400A5C623 /* IOKit.framework */; };
 		00B9955B1B128DF400A5C623 /* IOSurface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00B995591B128DF400A5C623 /* IOSurface.framework */; };
+		14D8FD19F35C4762BACFE02B /* CinderApp.icns in Resources */ = {isa = PBXBuildFile; fileRef = 2F2C945E53EF4934BFA46C8D /* CinderApp.icns */; };
+		4570AAF63C44416C9BFAD392 /* TriangleImageApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10C1F1D44B8C4C2EB3A9A648 /* TriangleImageApp.cpp */; };
 		5323E6B20EAFCA74003A9687 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5323E6B10EAFCA74003A9687 /* CoreVideo.framework */; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
-		DAC1157FE74A494C9635C4F1 /* TriangleImage_Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = A6568F9A09E244B4A14D2D36 /* TriangleImage_Prefix.pch */; };
-		14D8FD19F35C4762BACFE02B /* CinderApp.icns in Resources */ = {isa = PBXBuildFile; fileRef = 2F2C945E53EF4934BFA46C8D /* CinderApp.icns */; };
-		897EF75213824F1EACDDADF0 /* Resources.h in Headers */ = {isa = PBXBuildFile; fileRef = 63DC51C304D442698B42ABC1 /* Resources.h */; };
-		4570AAF63C44416C9BFAD392 /* TriangleImageApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 10C1F1D44B8C4C2EB3A9A648 /* TriangleImageApp.cpp */; };
+		EE6EF27B1D007CA600E34C00 /* libcairo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EE6EF2781D007CA600E34C00 /* libcairo.a */; };
+		EE6EF27C1D007CA600E34C00 /* libpixman-1.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EE6EF2791D007CA600E34C00 /* libpixman-1.a */; };
+		EE6EF27D1D007CA600E34C00 /* libpng16.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EE6EF27A1D007CA600E34C00 /* libpng16.a */; };
+		EE6EF27F1D007D4600E34C00 /* Cairo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EE6EF27E1D007D4600E34C00 /* Cairo.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,15 +37,19 @@
 		00B995581B128DF400A5C623 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		00B995591B128DF400A5C623 /* IOSurface.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOSurface.framework; path = System/Library/Frameworks/IOSurface.framework; sourceTree = SDKROOT; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		10C1F1D44B8C4C2EB3A9A648 /* TriangleImageApp.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.cpp; name = TriangleImageApp.cpp; path = ../src/TriangleImageApp.cpp; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		2F2C945E53EF4934BFA46C8D /* CinderApp.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = CinderApp.icns; path = ../resources/CinderApp.icns; sourceTree = "<group>"; };
 		5323E6B10EAFCA74003A9687 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = /System/Library/Frameworks/CoreVideo.framework; sourceTree = "<absolute>"; };
+		63DC51C304D442698B42ABC1 /* Resources.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Resources.h; path = ../include/Resources.h; sourceTree = "<group>"; };
+		8717204B8BA3499E8F9D3F48 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* TriangleImage.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TriangleImage.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		10C1F1D44B8C4C2EB3A9A648 /* TriangleImageApp.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.cpp; path = ../src/TriangleImageApp.cpp; sourceTree = "<group>"; name = TriangleImageApp.cpp; };
-		63DC51C304D442698B42ABC1 /* Resources.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ../include/Resources.h; sourceTree = "<group>"; name = Resources.h; };
-		2F2C945E53EF4934BFA46C8D /* CinderApp.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = ../resources/CinderApp.icns; sourceTree = "<group>"; name = CinderApp.icns; };
-		8717204B8BA3499E8F9D3F48 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; name = Info.plist; };
-		A6568F9A09E244B4A14D2D36 /* TriangleImage_Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; path = TriangleImage_Prefix.pch; sourceTree = "<group>"; name = TriangleImage_Prefix.pch; };
+		A6568F9A09E244B4A14D2D36 /* TriangleImage_Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = "\"\""; path = TriangleImage_Prefix.pch; sourceTree = "<group>"; };
+		EE6EF2781D007CA600E34C00 /* libcairo.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcairo.a; path = ../../../blocks/Cairo/lib/macosx/libcairo.a; sourceTree = "<group>"; };
+		EE6EF2791D007CA600E34C00 /* libpixman-1.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libpixman-1.a"; path = "../../../blocks/Cairo/lib/macosx/libpixman-1.a"; sourceTree = "<group>"; };
+		EE6EF27A1D007CA600E34C00 /* libpng16.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng16.a; path = ../../../blocks/Cairo/lib/macosx/libpng16.a; sourceTree = "<group>"; };
+		EE6EF27E1D007D4600E34C00 /* Cairo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Cairo.cpp; path = ../../../blocks/Cairo/src/Cairo.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,13 +60,16 @@
 				006D720419952D00008149E2 /* AVFoundation.framework in Frameworks */,
 				006D720519952D00008149E2 /* CoreMedia.framework in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
+				EE6EF27C1D007CA600E34C00 /* libpixman-1.a in Frameworks */,
 				0091D8F90E81B9330029341E /* OpenGL.framework in Frameworks */,
 				5323E6B20EAFCA74003A9687 /* CoreVideo.framework in Frameworks */,
+				EE6EF27D1D007CA600E34C00 /* libpng16.a in Frameworks */,
 				00B784B30FF439BC000DE1D7 /* Accelerate.framework in Frameworks */,
 				00B784B40FF439BC000DE1D7 /* AudioToolbox.framework in Frameworks */,
 				00B784B50FF439BC000DE1D7 /* AudioUnit.framework in Frameworks */,
 				00B784B60FF439BC000DE1D7 /* CoreAudio.framework in Frameworks */,
 				00B9955A1B128DF400A5C623 /* IOKit.framework in Frameworks */,
+				EE6EF27B1D007CA600E34C00 /* libcairo.a in Frameworks */,
 				00B9955B1B128DF400A5C623 /* IOSurface.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -68,6 +77,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		01B97315FEAEA392516A2CEA /* Blocks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Blocks;
+			sourceTree = "<group>";
+		};
 		080E96DDFE201D6D7F000001 /* Source */ = {
 			isa = PBXGroup;
 			children = (
@@ -114,6 +130,10 @@
 		29B97314FDCFA39411CA2CEA /* TriangleImage */ = {
 			isa = PBXGroup;
 			children = (
+				EE6EF2781D007CA600E34C00 /* libcairo.a */,
+				EE6EF2791D007CA600E34C00 /* libpixman-1.a */,
+				EE6EF27A1D007CA600E34C00 /* libpng16.a */,
+				EE6EF27E1D007D4600E34C00 /* Cairo.cpp */,
 				01B97315FEAEA392516A2CEA /* Blocks */,
 				29B97315FDCFA39411CA2CEA /* Headers */,
 				080E96DDFE201D6D7F000001 /* Source */,
@@ -122,13 +142,6 @@
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
 			name = TriangleImage;
-			sourceTree = "<group>";
-		};
-		01B97315FEAEA392516A2CEA /* Blocks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Blocks;
 			sourceTree = "<group>";
 		};
 		29B97315FDCFA39411CA2CEA /* Headers */ = {
@@ -184,6 +197,8 @@
 /* Begin PBXProject section */
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "TriangleImage" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
@@ -219,6 +234,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EE6EF27F1D007D4600E34C00 /* Cairo.cpp in Sources */,
 				4570AAF63C44416C9BFAD392 /* TriangleImageApp.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -230,24 +246,33 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				DEAD_CODE_STRIPPING = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = TriangleImage_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = TriangleImage_Prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = (
+					"\"$(CINDER_PATH)/include\"",
+					../../../blocks/Cairo/include/macosx,
+				);
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/whg/Code/cinder/cinder_0.9.0_mac/blocks/Cairo/lib/macosx,
+				);
 				OTHER_LDFLAGS = "\"$(CINDER_PATH)/lib/libcinder_d.a\"";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libcinder.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = TriangleImage;
 				SYMROOT = ./build;
+				USER_HEADER_SEARCH_PATHS = "\"$(CINDER_PATH)/include\" ../include \"$(CINDER_PATH)/blocks/Cairo/include\"";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -262,20 +287,29 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = TriangleImage_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"NDEBUG=1",
 					"$(inherited)",
 				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = TriangleImage_Prefix.pch;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = (
+					"\"$(CINDER_PATH)/include\"",
+					../../../blocks/Cairo/include/macosx,
+				);
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/Users/whg/Code/cinder/cinder_0.9.0_mac/blocks/Cairo/lib/macosx,
+				);
 				OTHER_LDFLAGS = "\"$(CINDER_PATH)/lib/libcinder.a\"";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libcinder.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = TriangleImage;
 				STRIP_INSTALLED_PRODUCT = YES;
 				SYMROOT = ./build;
+				USER_HEADER_SEARCH_PATHS = "\"$(CINDER_PATH)/include\" ../include \"$(CINDER_PATH)/blocks/Cairo/include\"";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -284,7 +318,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CINDER_PATH = "../../..";
+				CINDER_PATH = ../../..;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++11";
 				CLANG_CXX_LIBRARY = "libc++";
 				ENABLE_TESTABILITY = YES;
@@ -302,7 +336,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CINDER_PATH = "../../..";
+				CINDER_PATH = ../../..;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++11";
 				CLANG_CXX_LIBRARY = "libc++";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;

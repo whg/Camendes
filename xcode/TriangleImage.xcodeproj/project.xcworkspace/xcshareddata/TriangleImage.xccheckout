@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>A8EC6AF5-B00E-40EB-AF35-DA2646B796AC</string>
+	<key>IDESourceControlProjectName</key>
+	<string>TriangleImage</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>D4753DCB404C10DDB4A7001BD98B7E37FAF84030</key>
+		<string>https://github.com/whg/Camendes.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>xcode/TriangleImage.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>D4753DCB404C10DDB4A7001BD98B7E37FAF84030</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/whg/Camendes.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>D4753DCB404C10DDB4A7001BD98B7E37FAF84030</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>D4753DCB404C10DDB4A7001BD98B7E37FAF84030</string>
+			<key>IDESourceControlWCCName</key>
+			<string>TriangleImage</string>
+		</dict>
+	</array>
+</dict>
+</plist>
